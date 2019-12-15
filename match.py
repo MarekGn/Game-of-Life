@@ -4,6 +4,7 @@ import numpy as np
 
 STILL_LIFE = 'STILL_LIFE'
 OSCILLATOR = 'OSCILLATOR'
+GLIDER = 'GLIDER'
 
 shapes = [
     {
@@ -55,6 +56,22 @@ shapes2 = [
                 [1, 1, 1]
             ], dtype=np.uint8)
         ]
+    },
+    {
+        'name': 'glider',
+        'type': GLIDER,
+        'pattern': [
+            np.array([
+                [0, 1, 0],
+                [0, 0, 1],
+                [1, 1, 1]
+            ], dtype=np.uint8),
+            np.array([
+                [1, 0, 0],
+                [0, 1, 1],
+                [1, 1, 0]
+            ], dtype=np.uint8)
+        ]
     }
 ]
 
@@ -103,6 +120,27 @@ def explore_neighbours(board, i, j, cols, rows, ones, direction=DIR_ROOT):
     return ones
 
 
+def explore_neighbours2(board, i, j, cols, rows, ones, direction=DIR_ROOT):
+    ones[(i, j)] = (i, j)
+    a = board[i + 1][j] if i + 1 < rows else None
+    b = board[i + 1][j + 1] if i + 1 < rows and j + 1 < cols else None
+    c = board[i][j + 1] if j + 1 < cols else None
+    d = board[i][j - 1] if j - 1 >= 0 else None
+    e = board[i + 1][j - 1] if i + 1 < rows and j - 1 >= 0 else None
+    if a == 1:
+        explore_neighbours2(board, i + 1, j, cols, rows, ones, direction=DIR_DOWN)
+    if b == 1:
+        explore_neighbours2(board, i + 1, j + 1, cols, rows, ones, direction=DIR_RIGHT_DIAG)
+    if c == 1 and direction != DIR_LEFT:
+        explore_neighbours2(board, i, j + 1, cols, rows, ones, direction=DIR_RIGHT)
+    if d == 1 and direction != DIR_RIGHT:
+        explore_neighbours2(board, i, j - 1, cols, rows, ones, direction=DIR_LEFT)
+    if e == 1:
+        explore_neighbours2(board, i + 1, j - 1, cols, rows, ones, direction=DIR_LEFT_DIAG)
+
+    return list(ones.values())
+
+
 def clear_pattern(board, ones):
     for (i, j) in ones:
         board[i][j] = 0
@@ -131,20 +169,24 @@ def match_pattern(pattern_to_check, shapes):
             if is_same:
                 print('Found {}'.format(shape['name']))
                 break
-        elif shape['type'] == OSCILLATOR:
+        elif shape['type'] == OSCILLATOR or shape['type'] == GLIDER:
+            break_loop = False
             for pattern in shape['pattern']:
                 print(pattern)
                 is_same = np.array_equal(pattern, pattern_to_check)
                 if is_same:
                     print('Found {}'.format(shape['name']))
+                    break_loop = True
                     break
+            if break_loop:
+                break
 
 
 def match2(board, cols, rows, shapes):
     for i in range(rows):
         for j in range(cols):
             if board[i][j] == 1:
-                ones = explore_neighbours(board, i, j, cols, rows, ones=[])
+                ones = explore_neighbours2(board, i, j, cols, rows, ones={})
                 print(ones)
                 # match pattern
                 found_pattern = get_pattern(ones)
@@ -195,6 +237,8 @@ if __name__ == '__main__':
         [0, 0, 0, 0, 0, 1, 0, 0, 0],
         [1, 1, 1, 0, 1, 1, 0, 0, 0],
         [0, 0, 0, 0, 1, 1, 0, 1, 1],
-        [0, 0, 0, 0, 0, 0, 0, 1, 1]
+        [0, 0, 1, 0, 0, 0, 0, 1, 1],
+        [0, 0, 0, 1, 0, 0, 0, 0, 0],
+        [0, 1, 1, 1, 0, 0, 0, 1, 1],
     ], dtype=np.uint8)
-    match2(board=board2, cols=9, rows=4, shapes=shapes2)
+    match2(board=board2, cols=board2.shape[1], rows=board2.shape[0], shapes=shapes2)
