@@ -58,8 +58,6 @@ class RLEParser:
                     else:
                         self.deathrules = rule
 
-
-
     def parse(self, inp):
         self.input = inp.strip().split("!")[0].split("\n")
         hasmet = False
@@ -86,13 +84,17 @@ class RLEParser:
         self.complete = False
 
 
+def to_binary_array(pattern):
+    return np.array(pattern.ravel(), dtype=np.uint8)
+
+
 def main():
     data = open("Patterns/block.rle").read()
     parser = RLEParser()
     pattern = parser.parse(data)
     pattern = np.pad(pattern, pad_width=1, mode='constant')
     print(pattern)
-
+    print(to_binary_array(pattern))
 
 
 if __name__ == "__main__":

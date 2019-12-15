@@ -22,9 +22,11 @@ def generation(universe):
     return new_universe
 
 
-def animate_life(universe_size=(100,100), probability_of_ones=0.5, quality=100, cmap='Greys', n_generations=50, interval=100, save=True):
+def animate_life(universe_size=(100,100), probability_of_ones=0.5, quality=100, cmap='Greys',
+                 n_generations=50, interval=100, save=True):
     # Initialise the universe
-    universe = np.random.choice([0, 1], size=universe_size[0]*universe_size[1], p=[1-probability_of_ones, probability_of_ones]).reshape(universe_size)
+    universe = np.random.choice([0, 1], size=universe_size[0]*universe_size[1],
+                                p=[1-probability_of_ones, probability_of_ones]).reshape(universe_size)
     # Animate
     fig = plt.figure(dpi=quality)
     ims = []
