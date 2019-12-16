@@ -66,7 +66,8 @@ patterns = [
         'pattern': np.array([
             [0, 1, 1, 0],
             [1, 0, 0, 1],
-            []
+            [1, 0, 0, 1],
+            [0, 1, 1, 0]
         ], dtype=np.uint8)
     },
     {
