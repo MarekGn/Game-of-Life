@@ -32,7 +32,7 @@ def animate_life(universe_size=(100,100), probability_of_ones=0.5, quality=100, 
     universe = np.random.choice([0, 1], size=universe_size[0]*universe_size[1],
                                 p=[1-probability_of_ones, probability_of_ones]).reshape(universe_size)
     # Initialise logger
-    logger = Logger(Patterns.patterns)
+    logger = Logger(Patterns.patterns, universe_size, probability_of_ones, n_generations)
 
     # Animate
     fig = plt.figure(dpi=quality)
@@ -58,12 +58,12 @@ def animate_life(universe_size=(100,100), probability_of_ones=0.5, quality=100, 
 
 if __name__ == "__main__":
     animate_life(
-        universe_size=(100, 100),
-        probability_of_ones=0.1,
+        universe_size=(200, 200),
+        probability_of_ones=0.4,
         quality=100,    # image quality in DPI
         cmap='Greys',
-        n_generations=50,
+        n_generations=1000,
         interval=150,    # interval (in milliseconds) between iterations
         animation_save=True,
-        log_save=False
+        log_save=True
     )

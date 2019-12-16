@@ -1,8 +1,12 @@
 import numpy as np
 
+
 class Logger:
-    def __init__(self, patterns):
+    def __init__(self, patterns, universe_size, probability_of_ones, n_generations):
         self.data = {
+            "universe_size": universe_size,
+            "probability_of_ones": probability_of_ones,
+            "n_generations": n_generations,
             "all_attempts": {}
         }
         self.generation_attempts = {}
@@ -23,6 +27,7 @@ class Logger:
             self.generation_attempts[pattern] = 0
 
     def save_data(self):
-        np.save("log.npy", self.data, allow_pickle=True)
+        random = np.random.random()
+        np.save("Plot/log{}.npy".format(random), self.data, allow_pickle=True)
 
 

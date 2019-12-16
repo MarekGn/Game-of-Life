@@ -236,7 +236,7 @@ def match():
 
 if __name__ == '__main__':
     # match()
-    logger = Logger(Patterns.patterns)
+    logger = Logger(Patterns.patterns, 1, 1, 1)
     board2 = np.array([
         [0, 0, 0, 0, 0, 1, 0, 0, 0],
         [1, 1, 1, 0, 1, 1, 0, 0, 0],
