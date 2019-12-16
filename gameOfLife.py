@@ -1,6 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
+from Logger import Logger
+from Patterns import Patterns
+from match import match2
+from tqdm import tqdm
 
 
 def survival(x, y, universe):
@@ -23,32 +27,43 @@ def generation(universe):
 
 
 def animate_life(universe_size=(100,100), probability_of_ones=0.5, quality=100, cmap='Greys',
-                 n_generations=50, interval=100, save=True):
+                 n_generations=50, interval=100, animation_save=True, log_save=True):
     # Initialise the universe
     universe = np.random.choice([0, 1], size=universe_size[0]*universe_size[1],
                                 p=[1-probability_of_ones, probability_of_ones]).reshape(universe_size)
+    # Initialise logger
+    logger = Logger(Patterns.patterns)
+
     # Animate
     fig = plt.figure(dpi=quality)
     ims = []
-    for i in range(n_generations):
+    for i in tqdm(range(n_generations), "Generation Progress: "):
+        match2(universe.copy(), universe.shape[0], universe.shape[1], Patterns.patterns, logger)
+        logger.add_occurrences_from_generation()
         ims.append((plt.imshow(universe, cmap=cmap),))
         universe = generation(universe)
+    print(logger.data["all_attempts"])
+
     # Make animation
     im_ani = animation.ArtistAnimation(
         fig, ims, interval=interval, repeat_delay=3000, blit=True
     )
-    # Save the animation
-    if save:
+    # Save the animation and logger
+
+    if animation_save:
         im_ani.save("GameOfLife.gif", writer="imagemagick")
+    if log_save:
+        logger.save_data()
 
 
 if __name__ == "__main__":
     animate_life(
-        universe_size=(200, 200),
-        probability_of_ones=0.5,
+        universe_size=(100, 100),
+        probability_of_ones=0.1,
         quality=100,    # image quality in DPI
         cmap='Greys',
-        n_generations=100,
-        interval=100,    # interval (in milliseconds) between iterations
-        save=True,
+        n_generations=50,
+        interval=150,    # interval (in milliseconds) between iterations
+        animation_save=True,
+        log_save=False
     )
