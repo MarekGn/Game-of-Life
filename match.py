@@ -1,5 +1,7 @@
 from functools import reduce
 import numpy as np
+from Logger import Logger
+from Patterns import Patterns
 
 STILL_LIFE = 'STILL_LIFE'
 OSCILLATOR = 'OSCILLATOR'
@@ -234,6 +236,7 @@ def match():
 
 if __name__ == '__main__':
     # match()
+    logger = Logger(Patterns.patterns)
     board2 = np.array([
         [0, 0, 0, 0, 0, 1, 0, 0, 0],
         [1, 1, 1, 0, 1, 1, 0, 0, 0],
@@ -242,4 +245,5 @@ if __name__ == '__main__':
         [0, 0, 0, 1, 0, 0, 0, 0, 0],
         [0, 1, 1, 1, 0, 0, 0, 1, 1],
     ], dtype=np.uint8)
-    match2(board=board2, cols=board2.shape[1], rows=board2.shape[0], shapes=shapes2)
+    match2(board=board2, cols=board2.shape[1], rows=board2.shape[0], shapes=Patterns.patterns, logger=logger)
+    print(logger.generation_attempts)
