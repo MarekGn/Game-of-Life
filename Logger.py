@@ -16,7 +16,7 @@ class Logger:
     def add_occurrences_from_generation(self):
         for pattern in self.generation_attempts:
             self.data["all_attempts"][pattern].append(self.generation_attempts[pattern])
-            self._reset_generation_attempts()
+        self._reset_generation_attempts()
 
     def _reset_generation_attempts(self):
         for pattern in self.generation_attempts:
