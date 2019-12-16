@@ -1,10 +1,9 @@
 from functools import reduce
-
 import numpy as np
 
 STILL_LIFE = 'STILL_LIFE'
 OSCILLATOR = 'OSCILLATOR'
-GLIDER = 'GLIDER'
+SPACESHIP = 'SPACESHIP'
 
 shapes = [
     {
@@ -59,7 +58,7 @@ shapes2 = [
     },
     {
         'name': 'glider',
-        'type': GLIDER,
+        'type': SPACESHIP,
         'pattern': [
             np.array([
                 [0, 1, 0],
@@ -160,41 +159,43 @@ def get_pattern(ones):
     return pattern
 
 
-def match_pattern(pattern_to_check, shapes):
+def match_pattern(pattern_to_check, shapes, logger):
     for shape in shapes:
         if shape['type'] == STILL_LIFE:
-            print("checking: ")
-            print(shape['pattern'])
+            # print("checking: ")
+            # print(shape['pattern'])
             is_same = np.array_equal(shape['pattern'], pattern_to_check)
             if is_same:
-                print('Found {}'.format(shape['name']))
+                # print('Found {}'.format(shape['name']))
+                logger.add_occure(shape['name'])
                 break
-        elif shape['type'] == OSCILLATOR or shape['type'] == GLIDER:
+        elif shape['type'] == OSCILLATOR or shape['type'] == SPACESHIP:
             break_loop = False
             for pattern in shape['pattern']:
-                print(pattern)
+                # print(pattern)
                 is_same = np.array_equal(pattern, pattern_to_check)
                 if is_same:
-                    print('Found {}'.format(shape['name']))
+                    # print('Found {}'.format(shape['name']))
+                    logger.add_occure(shape['name'])
                     break_loop = True
                     break
             if break_loop:
                 break
 
 
-def match2(board, cols, rows, shapes):
+def match2(board, cols, rows, shapes, logger):
     for i in range(rows):
         for j in range(cols):
             if board[i][j] == 1:
                 ones = explore_neighbours2(board, i, j, cols, rows, ones={})
-                print(ones)
+                # print(ones)
                 # match pattern
                 found_pattern = get_pattern(ones)
-                print(found_pattern)
-                match_pattern(found_pattern, shapes)
+                # print(found_pattern)
+                match_pattern(found_pattern, shapes, logger)
                 # clear
                 clear_pattern(board, ones)
-                print("=======================")
+                # print("=======================")
 
 
 def match():
